@@ -32,6 +32,21 @@
             transition: background-color 0.3s ease; 
         }
         .calculate-button:hover { background-color: #4a54e0; }
+
+        #credit {
+            /* ลบ margin-top เดิมออกไป เพื่อให้แนบไปกับขอบล่างของ body */
+            
+            /* เพิ่มสไตล์สำหรับจัดวาง */
+            position: fixed; /* *** ทำให้เครดิตอยู่กับตำแหน่งของจอ (ล่างสุด) *** */
+            bottom: 5px;     /* ห่างจากขอบล่าง 5px */
+            width: 100%;    /* ให้ข้อความกว้างเต็มจอ */
+            
+            text-align: center;
+            font-size: 11px;
+            color: #ddd;     /* *** สีเทาอ่อนมาก (จางกว่าเดิม) *** */
+            opacity: 0.9;    /* *** เพิ่มความจางลงเล็กน้อย *** */
+            z-index: 10;     /* ให้ข้อความอยู่ด้านบนสุดขององค์ประกอบอื่น */
+        }
     </style>
 </head>
 <body>
@@ -83,6 +98,7 @@
         </div>
     </div>
 
+</body>
 <script>
         // *** ฐานข้อมูลสูตรยา (CHEMO_REGIMENS) ***
 const CHEMO_REGIMENS = {
@@ -198,6 +214,8 @@ function calculateChemoDose() {
 // เรียกใช้ฟังก์ชันคำนวณทันทีเมื่อโหลดหน้าเว็บ
 document.addEventListener('DOMContentLoaded', calculateChemoDose);
 </script>
-
+    <div id="credit">
+        Developed by witsao-oya
+    </div>
 </body>
 </html>
