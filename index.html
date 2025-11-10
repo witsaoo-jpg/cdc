@@ -199,10 +199,36 @@
         }
 
         document.addEventListener('DOMContentLoaded', calculateChemoDose);
+// ฟังก์ชันสำหรับนับและแสดงผลจำนวนผู้เข้าชม
+function getVisitorCount() {
+    // ต้องแทนที่ 'your_github_repo_name' ด้วย URL Repository จริงของคุณ
+    const key = 'witsaoo-jpg/cdc'; 
+    const countUrl = `https://api.countapi.xyz/hit/${key}/visits`;
+
+    fetch(countUrl) // ดึงข้อมูลจาก CountAPI
+        .then(response => response.json())
+        .then(data => {
+            const countElement = document.getElementById('visitorCount');
+            if (countElement) {
+                countElement.innerHTML = `| Visitors: ${data.value}`;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching visitor count:', error);
+            const countElement = document.getElementById('visitorCount');
+            if (countElement) {
+                countElement.innerHTML = '| Visitors: N/A';
+            }
+        });
+}
+
+// **เรียกใช้ฟังก์ชันนี้ตอนโหลดหน้าเว็บ**
+document.addEventListener('DOMContentLoaded', getVisitorCount);
+        
     </script>
-<div id="credit">
+    <div id="credit">
         Developed by witsao-oya
-        <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https://witsaoo-jpg.github.io/cdc" alt="Visitors" style="opacity: 0.8; vertical-align: middle;">
+        <span id="visitorCount">... Loading Count ...</span>
     </div>
     </body>
 </html>
