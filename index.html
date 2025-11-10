@@ -34,20 +34,24 @@
         }
         .calculate-button:hover { background-color: #4a54e0; }
 
-        /* *** สไตล์สำหรับเครดิตและตัวนับ (witsao-oya) *** */
+      /* *** สไตล์สำหรับเครดิต (witsao-oya) *** */
         #credit {
+            /* โค้ดเดิม: ตรึงไว้ด้านล่างจอ */
             position: fixed; 
             bottom: 5px;
-            width: 100%;
+            width: 100%; /* ให้กว้างเต็มจอ */
             z-index: 10; 
-            text-align: center;
+            
+            /* *** ส่วนที่แก้ไข/เพิ่ม: ใช้ Flexbox จัดกึ่งกลาง *** */
+            display: flex; /* เปิดใช้งาน Flexbox */
+            justify-content: center; /* จัดเนื้อหาให้อยู่กึ่งกลางแนวนอน */
+            align-items: center; /* จัดเนื้อหาให้อยู่กึ่งกลางแนวตั้ง (ถ้ามี) */
+            /* *************************************************** */
+            
+            background-color: #f4f4f9; /* ใส่พื้นหลังให้ตรงกับ Body */
             font-size: 11px;
             color: #ccc;
             opacity: 0.9;
-        }
-        #credit img { /* จัดสไตล์สำหรับ Badge ตัวนับ */
-            margin-left: 10px;
-            vertical-align: middle;
         }
         
         /* Responsive Design */
@@ -232,22 +236,7 @@ document.addEventListener('DOMContentLoaded', getVisitorCount);
 <div id="credit">
         Developed by witsao-oya Version 1.00
 <div id="sfc28nygdsbhskmdubgp7jqqqc8j8whjsmz"></div><script type="text/javascript" src="https://counter1.optistats.ovh/private/counter.js?c=28nygdsbhskmdubgp7jqqqc8j8whjsmz&down=async" async></script><noscript><a href="https://www.freecounterstat.com" title="free traffic counter"><img src="https://counter1.optistats.ovh/private/freecounterstat.php?c=28nygdsbhskmdubgp7jqqqc8j8whjsmz" border="0" title="free traffic counter" alt="free traffic counter"></a></noscript>
-position: fixed; 
-            bottom: 5px;
-            width: 100%; /* ให้กว้างเต็มจอ */
-            z-index: 10; 
-            
-            /* *** ส่วนที่แก้ไข/เพิ่ม: ใช้ Flexbox จัดกึ่งกลาง *** */
-            display: flex; /* เปิดใช้งาน Flexbox */
-            justify-content: center; /* จัดเนื้อหาให้อยู่กึ่งกลางแนวนอน */
-            align-items: center; /* จัดเนื้อหาให้อยู่กึ่งกลางแนวตั้ง (ถ้ามี) */
-            /* *************************************************** */
-            
-            background-color: #f4f4f9; /* ใส่พื้นหลังให้ตรงกับ Body */
-            font-size: 11px;
-            color: #ccc;
-            opacity: 0.9;
-        }
+
 </div>
     
     </body>
