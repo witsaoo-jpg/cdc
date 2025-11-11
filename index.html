@@ -5,6 +5,23 @@
     <meta charset="UTF-8">
     <style>
         /* สไตล์ CSS พื้นฐาน */
+        html, body { 
+            height: 100%; /* *** สำคัญ: สั่งให้ใช้ความสูงเต็มหน้าจอของอุปกรณ์ *** */
+        }
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f4f4f9; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; /* 100vh ใช้ความสูงของ Viewport */
+            margin: 0; 
+        }
+        
+        /* ... CSS อื่นๆ ... */
+    </style>
+        
+        /* สไตล์ CSS พื้นฐาน */
         body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
         .calculator-container { 
             background-color: #ffffff; 
