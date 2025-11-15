@@ -220,6 +220,7 @@ function calculateChemoDose() {
             <th>ยา</th>
             <th>ขนาด (mg/m²)</th>
             <th>ต้องให้ (mg)</th>
+            <th>reduc (%)</th>
         </tr>`;
     drugs.forEach(drug => {
         let dose = drug.dose_m2 * bsa * reduction;
