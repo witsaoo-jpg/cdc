@@ -203,7 +203,7 @@ function calculateChemoDose() {
     let h = parseFloat(document.getElementById("height").value) || 0;
     let w = parseFloat(document.getElementById("weight").value) || 0;
     let protocol = document.getElementById("drugProtocol").value;
-    let reduction = parseFloat(document.getElementById("doseReduction").value) || 1;
+    let reduction = parseFloat(document.getElementById("doseReduction").value);
 
     if (!h || !w) return;
 
@@ -214,6 +214,9 @@ function calculateChemoDose() {
         document.getElementById("resultMultiDose").innerHTML = "โปรดเลือกสูตรยา";
         return;
     }
+
+    let reducPercent = ((1 - reduction) * 100).toFixed(0) + "%";
+
     let drugs = CHEMO_REGIMENS[protocol];
     let html = `<table>
         <tr>
@@ -222,6 +225,7 @@ function calculateChemoDose() {
             <th>ต้องให้ (mg)</th>
             <th>reduc (%)</th>
         </tr>`;
+
     drugs.forEach(drug => {
         let dose = drug.dose_m2 * bsa * reduction;
         if (drug.max_dose && dose > drug.max_dose) dose = drug.max_dose;
@@ -229,8 +233,10 @@ function calculateChemoDose() {
             <td>${drug.name}</td>
             <td>${drug.dose_m2}</td>
             <td>${dose.toFixed(1)}</td>
+            <td>${reducPercent}</td>
         </tr>`;
     });
+
     html += "</table>";
     document.getElementById("resultMultiDose").innerHTML = html;
 }
