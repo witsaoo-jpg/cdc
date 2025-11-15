@@ -1,244 +1,238 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-    <title>เครื่องคำนวณยาเคมีบำบัด (Regimen Dose)</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เครื่องคำนวณยาเคมีบำบัด (Regimen Dose)</title>
     <style>
-       /* สไตล์ CSS พื้นฐาน */
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .calculator-container { 
-            background-color: #ffffff; 
-            padding: 30px; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-            width: 350px; 
-            text-align: left; 
+        :root {
+            --primary: #4a6cf7;
+            --primary-dark: #2f4ed8;
+            --bg: #f5f7ff;
+            --card-bg: #ffffff;
+            --border: #d9e1ff;
+            --text-dark: #2e2e3a;
         }
-        h1 { color: #333; border-bottom: 2px solid #5c67f2; padding-bottom: 10px; margin-bottom: 20px; text-align: center; }
-        label, input, select { display: block; margin-top: 15px; width: 100%; box-sizing: border-box; }
-        input[type="number"], select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        .result-box { margin-top: 25px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background-color: #eaf0ff; }
-        .result-label { font-weight: bold; color: #5c67f2; margin-bottom: 5px; }
 
-        /* สไตล์สำหรับตารางผลลัพธ์ */
-        #resultMultiDose table { width:100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em; }
-        #resultMultiDose th, #resultMultiDose td { padding: 8px; border: 1px solid #ccc; text-align: center; }
-        #resultMultiDose th { background-color: #ddd; }
-
-        /* สไตล์ปุ่มคำนวณ */
-        .calculate-button { 
-            margin-top: 25px; padding: 15px 25px; background-color: #5c67f2; color: white; border: none; 
-            border-radius: 6px; width: 100%; cursor: pointer; font-size: 18px; font-weight: bold; 
-            transition: background-color 0.3s ease; 
+        body {
+            font-family: "Prompt", sans-serif;
+            background: var(--bg);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            flex-direction: column;
         }
-        .calculate-button:hover { background-color: #4a54e0; }
+
+        .calculator-container {
+            background: var(--card-bg);
+            width: 420px;
+            max-width: 95%;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+
+        label {
+            margin-top: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: block;
+        }
+
+        input, select {
+            margin-top: 8px;
+            padding: 12px;
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 5px rgba(74, 108, 247, 0.3);
+        }
+
+        .calculate-button {
+            margin-top: 25px;
+            padding: 15px;
+            width: 100%;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 12px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .calculate-button:hover {
+            background: var(--primary-dark);
+        }
+
+        .result-box {
+            margin-top: 25px;
+            padding: 15px;
+            background: #eef3ff;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .result-label {
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        #resultMultiDose table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        #resultMultiDose th {
+            background: var(--primary);
+            color: white;
+            padding: 10px;
+        }
+
+        #resultMultiDose td {
+            border-bottom: 1px solid #e5e7ff;
+            padding: 8px;
+            text-align: center;
+        }
 
         #credit {
-            /* ลบ margin-top เดิมออกไป เพื่อให้แนบไปกับขอบล่างของ body */
-            
-            /* เพิ่มสไตล์สำหรับจัดวาง */
-            position: fixed; /* *** ทำให้เครดิตอยู่กับตำแหน่งของจอ (ล่างสุด) *** */
-            bottom: 5px;     /* ห่างจากขอบล่าง 5px */
-            width: 100%;    /* ให้ข้อความกว้างเต็มจอ */
-            
             text-align: center;
             font-size: 11px;
-            color: #ddd;     /* *** สีเทาอ่อนมาก (จางกว่าเดิม) *** */
-            opacity: 0.9;    /* *** เพิ่มความจางลงเล็กน้อย *** */
-            z-index: 10;     /* ให้ข้อความอยู่ด้านบนสุดขององค์ประกอบอื่น */
+            color: #bfc4d9;
+            margin-top: 20px;
+            padding-bottom: 10px;
         }
-        /* *** Responsive Design ด้วย Media Queries *** */
-@media (max-width: 600px) {
-    /* สำหรับหน้าจอขนาดเล็ก (เช่น โทรศัพท์มือถือ) */
-    .calculator-container {
-        width: 90%; /* ให้กล่องกว้าง 90% ของหน้าจอมือถือ */
-        padding: 20px; /* ลด padding ลงเล็กน้อย */
-        margin: 15px; /* มีขอบห่างเล็กน้อยจากขอบจอ */
-    }
-}
 
-@media (min-width: 601px) {
-    /* สำหรับหน้าจอขนาดใหญ่ (เช่น แท็บเล็ตและคอมพิวเตอร์) */
-    .calculator-container {
-        /* ใช้ค่าความกว้างสูงสุดที่เหมาะสมสำหรับคอมพิวเตอร์ */
-        max-width: 450px; 
-        width: 100%; /* ให้มันยืดหยุ่นไม่เกิน 450px */
-    }
-}
-
-#credit {
-    /* ปรับปรุงเครดิตให้ไม่ทับองค์ประกอบอื่นเมื่อจอเล็ก */
-    font-size: 10px;
-}
+        @media (max-width: 480px) {
+            .calculator-container { width: 90%; padding: 25px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="calculator-container">
-        <h1>เครื่องคำนวณยาเคมีบำบัด</h1>
-        
-        <label for="height">ส่วนสูง (cm):</label>
-        <input type="number" id="height" value="170" min="1" oninput="calculateChemoDose()"> 
-        
-        <label for="weight">น้ำหนัก (kg):</label>
-        <input type="number" id="weight" value="70" min="1" oninput="calculateChemoDose()">
-        
-        <div class="result-box" style="margin-bottom: 20px; background-color: #ffeaea;">
-            <div class="result-label" style="color: #d9534f;">พื้นที่ผิวร่างกาย (BSA):</div>
-            <span id="resultBSA">0.00 m²</span>
-        </div>
+<div class="calculator-container">
+    <h1>เครื่องคำนวณยาเคมีบำบัด</h1>
 
-        <hr style="margin: 20px 0;">
-        
-        <label for="drugProtocol">เลือกสูตรยา (Regimen):</label>
-        <select id="drugProtocol" onchange="calculateChemoDose()">
-            <option value="">-- กรุณาเลือกสูตรยา --</option>
-            <option value="mFOLFOX-6">mFOLFOX-6</option>
-            <option value="mFOLFIRI">mFOLFIRI</option>
-            <option value="ABVD">ABVD Regimen</option>
-            <option value="FOLFOX">FOLFOX (ตัวอย่างเดิม)</option>
-        </select>
-        
-        <button onclick="calculateChemoDose()" class="calculate-button">
-            คำนวณขนาดยา
-        </button>
-<label for="doseReduction">ปรับลดขนาดยา (Dose Reduction):</label>
-<select id="doseReduction" onchange="calculateChemoDose()">
-    <option value="1">ไม่ลดโดส (0%)</option>
-    <option value="0.95">ลดโดส 5%</option>
-    <option value="0.90">ลดโดส 10%</option>
-    <option value="0.85">ลดโดส 15%</option>
-    <option value="0.80">ลดโดส 20%</option>
-    <option value="0.75">ลดโดส 25%</option>
-    <option value="0.70">ลดโดส 30%</option>
-</select>
-<hr style="margin: 20px 0;">
-        <div class="result-box">
-            <div class="result-label">สรุปขนาดยาที่ต้องให้ (Total Dose):</div>
-            <div id="resultMultiDose">
-                โปรดเลือกสูตรยาและกรอกข้อมูลผู้ป่วย
-            </div>
-        </div>
+    <label>ส่วนสูง (cm)</label>
+    <input type="number" id="height" value="170" min="1" oninput="calculateChemoDose()" />
+
+    <label>น้ำหนัก (kg)</label>
+    <input type="number" id="weight" value="70" min="1" oninput="calculateChemoDose()" />
+
+    <div class="result-box" style="background:#ffecec; margin-top:20px;">
+        <div class="result-label" style="color:#d9534f;">พื้นที่ผิวร่างกาย (BSA):</div>
+        <span id="resultBSA">0.00 m²</span>
     </div>
-<div id="credit">
-        Developed by witsao-oya Version 1.00
-<div id="sfc28nygdsbhskmdubgp7jqqqc8j8whjsmz"></div><script type="text/javascript" src="https://counter1.optistats.ovh/private/counter.js?c=28nygdsbhskmdubgp7jqqqc8j8whjsmz&down=async" async></script><noscript><a href="https://www.freecounterstat.com" title="free traffic counter"><img src="https://counter1.optistats.ovh/private/freecounterstat.php?c=28nygdsbhskmdubgp7jqqqc8j8whjsmz" border="0" title="free traffic counter" alt="free traffic counter"></a></noscript>
+
+    <label style="margin-top:25px;">เลือกสูตรยา (Regimen)</label>
+    <select id="drugProtocol" onchange="calculateChemoDose()">
+        <option value="">-- กรุณาเลือกสูตรยา --</option>
+        <option value="mFOLFOX-6">mFOLFOX-6</option>
+        <option value="mFOLFIRI">mFOLFIRI</option>
+        <option value="ABVD">ABVD Regimen</option>
+    </select>
+
+    <label style="margin-top:25px;">ปรับลดขนาดยา (Dose Reduction)</label>
+    <select id="doseReduction" onchange="calculateChemoDose()">
+        <option value="1">ไม่ลดโดส (0%)</option>
+        <option value="0.95">ลดโดส 5%</option>
+        <option value="0.90">ลดโดส 10%</option>
+        <option value="0.85">ลดโดส 15%</option>
+        <option value="0.80">ลดโดส 20%</option>
+        <option value="0.75">ลดโดส 25%</option>
+        <option value="0.70">ลดโดส 30%</option>
+    </select>
+
+    <button class="calculate-button" onclick="calculateChemoDose()">คำนวณขนาดยา</button>
+
+    <div class="result-box">
+        <div class="result-label">สรุปขนาดยาที่ต้องให้ (Total Dose)</div>
+        <div id="resultMultiDose">โปรดเลือกสูตรยาและกรอกข้อมูลผู้ป่วย</div>
+    </div>
 </div>
-</body>
+
+<div id="credit">
+    Developed by witsao-oya — Responsive Version 1.1
+</div>
+
 <script>
-        // *** ฐานข้อมูลสูตรยา (CHEMO_REGIMENS) ***
 const CHEMO_REGIMENS = {
-    // สูตรยา mFOLFOX-6 (สำหรับ Colorectal Cancer)
     'mFOLFOX-6': [
-        { name: 'Oxaliplatin', dose_m2: 85, max_dose: null, note: 'mg/m²' },
-        { name: 'Leucovorin', dose_m2: 200, max_dose: null, note: 'mg/m²' },
-        { name: '5-FU Bolus', dose_m2: 400, max_dose: null, note: 'mg/m²' },
-        { name: '5-FU Infusion', dose_m2: 1200, max_dose: null, note: 'mg/m²' }
+        { name: 'Oxaliplatin', dose_m2: 85 },
+        { name: 'Leucovorin', dose_m2: 200 },
+        { name: '5-FU Bolus', dose_m2: 400 },
+        { name: '5-FU Infusion', dose_m2: 1200 }
     ],
-    // สูตรยา mFOLFIRI (สำหรับ Colorectal Cancer)
     'mFOLFIRI': [
-        { name: 'Irinotecan', dose_m2: 180, max_dose: null, note: 'mg/m²' },
-        { name: 'Leucovorin', dose_m2: 200, max_dose: null, note: 'mg/m²' },
-        { name: '5-FU Bolus', dose_m2: 400, max_dose: null, note: 'mg/m²' },
-        { name: '5-FU Infusion', dose_m2: 1200, max_dose: null, note: 'mg/m²' }
+        { name: 'Irinotecan', dose_m2: 180 },
+        { name: 'Leucovorin', dose_m2: 200 },
+        { name: '5-FU Bolus', dose_m2: 400 },
+        { name: '5-FU Infusion', dose_m2: 1200 }
     ],
-    // สูตรยาอื่นๆ ที่เราใช้เป็นตัวอย่างก่อนหน้า
     'ABVD': [
-        { name: 'Doxorubicin', dose_m2: 25, max_dose: 40, note: 'mg/m²' },
-        { name: 'Bleomycin', dose_m2: 10, max_dose: null, note: 'mg/m²' }, 
-        { name: 'Vinblastine', dose_m2: 6, max_dose: 15, note: 'mg/m²' },
-        { name: 'Dacarbazine', dose_m2: 375, max_dose: null, note: 'mg/m²' }
-    ],
+        { name: 'Doxorubicin', dose_m2: 25, max_dose: 40 },
+        { name: 'Bleomycin', dose_m2: 10 },
+        { name: 'Vinblastine', dose_m2: 6, max_dose: 15 },
+        { name: 'Dacarbazine', dose_m2: 375 }
+    ]
 };
 
-// *** ฟังก์ชันคำนวณหลัก ทำงานเมื่อมีการเปลี่ยนแปลงข้อมูลหรือกดปุ่ม ***
-function calculateChemoDose() {
-    // 1. ดึงค่าตัวแปร
-    let height = parseFloat(document.getElementById("height").value) || 0;
-    let weight = parseFloat(document.getElementById("weight").value) || 0;
-    let protocol = document.getElementById("drugProtocol").value;
-    
-    // *** ดึงค่าตัวคูณการลดโดส (ส่วนที่เพิ่มใหม่) ***
-    let reductionFactor = parseFloat(document.getElementById("doseReduction").value) || 1; 
-
-    let resultBSA = document.getElementById("resultBSA");
-    let resultMultiDose = document.getElementById("resultMultiDose");
-
-    // 2. ตรวจสอบข้อมูลผู้ป่วย
-    if (height <= 0 || weight <= 0) {
-        resultBSA.innerHTML = "❌ ป้อนส่วนสูงและน้ำหนัก";
-        resultMultiDose.innerHTML = "โปรดกรอกข้อมูลผู้ป่วย";
-        return;
-    }
-    
-    // 3. คำนวณ BSA (Mosteller Formula)
-    let bsa = Math.sqrt((height * weight) / 3600); 
-    resultBSA.innerHTML = `${bsa.toFixed(2)} m²`; 
-
-    // 4. ตรวจสอบและดึงข้อมูลสูตรยา
-    if (protocol === "") {
-        resultMultiDose.innerHTML = "โปรดเลือกสูตรยาจากรายการ";
-        return;
-    }
-    const selectedRegimen = CHEMO_REGIMENS[protocol];
-    
-    // 5. วนซ้ำเพื่อคำนวณยาแต่ละตัวและสร้างตารางผลลัพธ์
-    let tableHTML = `
-        <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
-            <tr style="background-color: #ddd;">
-                <th style="padding: 8px; border: 1px solid #ccc; text-align: left;">ชื่อยา</th>
-                <th style="padding: 8px; border: 1px solid #ccc;">Dose/m²</th>
-                <th style="padding: 8px; border: 1px solid #ccc;">Total Dose (mg)</th>
-                <th style="padding: 8px; border: 1px solid #ccc;">Note</th>
-            </tr>
-    `;
-
-    selectedRegimen.forEach(drug => {
-        let calculatedDose = bsa * drug.dose_m2;
-        
-        // *** 1. การปรับลดโดสตามเปอร์เซ็นต์ (Apply Reduction) ***
-        let adjustedDose = calculatedDose * reductionFactor;
-        
-        let finalDose = adjustedDose;
-        let note = "✅ OK";
-
-        // 2. ตรวจสอบ Dose Capping (ใช้ adjustedDose ในการตรวจสอบ)
-        if (drug.max_dose !== null && adjustedDose > drug.max_dose) {
-            finalDose = drug.max_dose;
-            note = `⚠️ Capped: Max ${drug.max_dose.toFixed(1)} mg`;
-        }
-
-        // 3. แสดงข้อความลดโดสเพิ่มเติม
-        if (reductionFactor < 1) {
-            let percentReduced = (1 - reductionFactor) * 100;
-            let reductionNote = `⬇️ Reduced ${percentReduced.toFixed(0)}%`;
-            
-            if (finalDose !== adjustedDose) { // ตรวจสอบว่าถูก Capped หรือไม่
-                 note = reductionNote + " & Capped!";
-            } else {
-                 note = reductionNote;
-            }
-        }
-
-
-        tableHTML += `
-            <tr>
-                <td style="padding: 8px; border: 1px solid #ccc; text-align: left;">${drug.name}</td>
-                <td style="padding: 8px; border: 1px solid #ccc; text-align: center;">${drug.dose_m2} ${drug.note}</td>
-                <td style="padding: 8px; border: 1px solid #ccc; font-weight: bold; text-align: center;">${finalDose.toFixed(1)}</td>
-                <td style="padding: 8px; border: 1px solid #ccc; text-align: center; color: #f0ad4e;">${note}</td>
-            </tr>
-        `;
-    });
-
-    tableHTML += `</table>`;
-    
-    // 6. แสดงตารางผลลัพธ์
-    resultMultiDose.innerHTML = tableHTML;
+function calculateBSA(h, w) {
+    return Math.sqrt((h * w) / 3600);
 }
 
-// เรียกใช้ฟังก์ชันคำนวณทันทีเมื่อโหลดหน้าเว็บ
-document.addEventListener('DOMContentLoaded', calculateChemoDose);
+function calculateChemoDose() {
+    let h = parseFloat(document.getElementById("height").value) || 0;
+    let w = parseFloat(document.getElementById("weight").value) || 0;
+    let protocol = document.getElementById("drugProtocol").value;
+    let reduction = parseFloat(document.getElementById("doseReduction").value) || 1;
+
+    if (!h || !w) return;
+
+    let bsa = calculateBSA(h, w);
+    document.getElementById("resultBSA").innerText = bsa.toFixed(2) + " m²";
+
+    if (!protocol) {
+        document.getElementById("resultMultiDose").innerHTML = "โปรดเลือกสูตรยา";
+        return;
+    }
+    let drugs = CHEMO_REGIMENS[protocol];
+    let html = `<table>
+        <tr>
+            <th>ยา</th>
+            <th>ขนาด (mg/m²)</th>
+            <th>ต้องให้ (mg)</th>
+        </tr>`;
+    drugs.forEach(drug => {
+        let dose = drug.dose_m2 * bsa * reduction;
+        if (drug.max_dose && dose > drug.max_dose) dose = drug.max_dose;
+        html += `<tr>
+            <td>${drug.name}</td>
+            <td>${drug.dose_m2}</td>
+            <td>${dose.toFixed(1)}</td>
+        </tr>`;
+    });
+    html += "</table>";
+    document.getElementById("resultMultiDose").innerHTML = html;
+}
 </script>
 
 </body>
