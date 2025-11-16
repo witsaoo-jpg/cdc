@@ -240,7 +240,27 @@ function calculateChemoDose() {
     html += "</table>";
     document.getElementById("resultMultiDose").innerHTML = html;
 }
-</script>
+    // Visitor counter using localStorage increments per browser
+function updateVisitorCount() {
+    let count = localStorage.getItem('visitorCount');
+    if (count === null) {
+        count = 0;
+    } else {
+        count = parseInt(count);
+    }
+    count++;
+    localStorage.setItem('visitorCount', count);
+    document.getElementById("visitorCount").innerText = count;
+}
 
+// Call visitor count update on page load
+window.onload = function() {
+    updateVisitorCount();
+    calculateChemoDose(); // your existing function call
+}
+</script>
+<div style="text-align:center; margin-top: 20px;">
+    จำนวนผู้เข้าชมหน้าเว็บนี้: <span id="visitorCount">0</span> ครั้ง
+</div>
 </body>
 </html>
